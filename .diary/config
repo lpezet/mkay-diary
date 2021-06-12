@@ -1,0 +1,2 @@
+DIARY_EDITOR='open -a "/Applications/Visual Studio Code.app"'
+INCLUDE_HEADER=false
