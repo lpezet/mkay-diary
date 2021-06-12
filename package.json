@@ -4,16 +4,36 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",
     "lint": "eslint src/main/ --ext .ts",
-    "format": "prettier --write \"src/main/**/*.+(ts|tsx|js|jsx|json|yml|yaml|css|md|vue)\""
+    "format": "prettier --write \"src/main/**/*.+(ts|tsx|js|jsx|json|yml|yaml|css|md|vue)\"",
+    "mocha": "nyc mocha",
+    "mocha-single": "nyc mocha --require ts-node/register --require source-map-support/register --require src/test/helpers/mocha-bootstrap.js --timeout=1000",
+    "test": "npm run lint -- --quiet && npm run mocha"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "cli-color": "^2.0.0",
+    "cli-spinner": "^0.2.10",
+    "commander": "^7.2.0",
+    "configstore": "^6.0.0",
+    "didyoumean": "^1.2.1",
+    "exit-code": "^1.0.2",
+    "javascript-time-ago": "^2.3.6",
+    "lodash": "^4.17.21",
+    "log4js": "^6.3.0",
+    "universal-analytics": "^0.4.23",
+    "update-notifier": "^5.1.0",
+    "uuid": "^7.0.3"
+  },
   "devDependencies": {
+    "@types/inquirer": "^6.0.3",
+    "@types/lodash": "^4.14.149",
     "@types/node": "^14.14.31",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
