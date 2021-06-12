@@ -3,20 +3,17 @@ BASE_DIR=.diary
 CONFIG_FILE=${BASE_DIR}/config
 ENTRIES_DIR=${BASE_DIR}/entries
 FULL_DIARY_FILE=${BASE_DIR}/full.md
-START_TAG="<!-- START mkay-diary -->"
-END_TAG="<!-- END mkay-diary -->"
-START_EXPLICIT_TAG="<!-- START mkay-diary generated diary please keep comment here to allow auto update -->"
-END_EXPLICIT_TAG="<!-- END mkay-diary generated diary please keep comment here to allow auto update -->"
-
 
 [ ! -d ${BASE_DIR} ] && mkdir ${BASE_DIR}
-
-load_setup() {
- if [ -f ${CONFIG_FILE} ]; then
+if [ -f ${CONFIG_FILE} ]; then
   # echo "Loading config file.."
   source ${CONFIG_FILE}
- fi
-}
+fi
+
+FILES=${FILES:-Readme.md}
+START_TAG="<!-- ${HINT}START mkay-diary -->"
+END_TAG="<!-- ${HINT}END mkay-diary -->"
+START_EXPLICIT_TAG="<!-- ${HINT}START mkay-diary generated diary please keep comment here to allow auto update -->"
 
 setup() {
  
@@ -80,27 +77,33 @@ index() {
 }
 
 generate() {
-  local file=Readme.md
-  if [ ! -f "$file" ]; then
-    echo "Cannot not find $file."
-    return 1
+  local files="Readme.md"
+  if [ ! -z "$1" ]; then
+    files=$@
   fi
   index
-  payload=`cat ${FULL_DIARY_FILE}`
-  explicitTagPresent=$(cat ${file} | grep "${START_EXPLICIT_TAG}")
-  if [ ! -z "${explicitTagPresent}" ]; then
-    sed -n "1,/${START_EXPLICIT_TAG}/p;/${END_TAG}/,\$p" ${file} > /tmp/diary.1.tmp
-    local header="\n# Diary"
-    if [ "${INCLUDE_HEADER}" = "false" ]; then
-      header=""
+  local payload=`cat ${FULL_DIARY_FILE}`
+  local file
+  for file in ${files}; do
+    if [ ! -f $file ]; then
+      echo "Cannot not find $file."
+      return 1
     fi
-    sed -e "/${START_EXPLICIT_TAG}/{s/${START_EXPLICIT_TAG}/${START_EXPLICIT_TAG}${header}/g;" -e "r ${FULL_DIARY_FILE}" -e "}" /tmp/diary.1.tmp > /tmp/diary.2.tmp # > ${file}.tmp
-    mv /tmp/diary.2.tmp $file
-  else
-    sed -e "/${START_TAG}/{s/${START_TAG}/${START_EXPLICIT_TAG}\n# Diary\n/g;" -e "r ${FULL_DIARY_FILE}" -e "}" ${file} > /tmp/diary.0.tmp # > ${file}.tmp
-    mv /tmp/diary.0.tmp $file
-  fi
-  # cat ${file} | sed '/<!-- START mkay-diary -->/{ s/<!-- START mkay-diary -->//g ; r '${FULL_DIARY_FILE}' ; }' > ${file}.tmp
+    explicitTagPresent=$(cat ${file} | grep "${START_EXPLICIT_TAG}")
+    if [ ! -z "${explicitTagPresent}" ]; then
+      sed -n "1,/${START_EXPLICIT_TAG}/p;/${END_TAG}/,\$p" ${file} > /tmp/diary.1.tmp
+      local header="\n# Diary"
+      if [ "${INCLUDE_HEADER}" = "false" ]; then
+        header=""
+      fi
+      sed -e "/${START_EXPLICIT_TAG}/{s/${START_EXPLICIT_TAG}/${START_EXPLICIT_TAG}${header}/;" -e "r ${FULL_DIARY_FILE}" -e "}" /tmp/diary.1.tmp > /tmp/diary.2.tmp # > ${file}.tmp
+      mv /tmp/diary.2.tmp $file
+    else
+      sed -e "/${START_TAG}/{s/${START_TAG}/${START_EXPLICIT_TAG}\n# Diary\n/g;" -e "r ${FULL_DIARY_FILE}" -e "}" ${file} > /tmp/diary.0.tmp # > ${file}.tmp
+      mv /tmp/diary.0.tmp $file
+    fi
+    # cat ${file} | sed '/<!-- START mkay-diary -->/{ s/<!-- START mkay-diary -->//g ; r '${FULL_DIARY_FILE}' ; }' > ${file}.tmp
+  done
   return 0
 }
 
@@ -120,8 +123,6 @@ help() {
  echo -e "${LINE[@]}"
 }
 
-load_setup
-
 case $1 in
   i | index)
    index
@@ -136,7 +137,8 @@ case $1 in
    setup "$2" "$3"
    ;;
   g | generate)
-   generate
+   shift
+   generate $@
    ;;
   *)
    help
