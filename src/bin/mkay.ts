@@ -3,7 +3,7 @@
 import * as _ from "lodash";
 import * as clc from "cli-color";
 import * as path from "path";
-import { configstore } from "../main/configstore";
+import { Config } from "../main/config";
 import { configureLogger } from "../main/logger";
 import * as program from "commander";
 
@@ -11,10 +11,7 @@ import * as program from "commander";
 
 const args = process.argv.slice(2);
 
-const logFilename = path.join(
-  path.resolve(__dirname, "../../"),
-  "cue-me-in.log"
-);
+const logFilename = path.join(path.resolve(__dirname, "../../"), "mkay.log");
 // const logFilename = path.join("/var/log/", "/cue-me-in.log");
 const debugging = _.includes(args, "--debug");
 const logLevel = process.env.DEBUG || debugging ? "debug" : "info";
@@ -94,7 +91,7 @@ process.on("exit", function (code) {
   // }
 
   if (code > 0 && process.stdout.isTTY) {
-    const lastError = configstore.get("lastError") || 0;
+    const lastError = Config.lastError() || 0;
     const timestamp = Date.now();
     if (lastError > timestamp - 120000) {
       let help;
@@ -113,9 +110,9 @@ process.on("exit", function (code) {
         console.log(help);
       }
     }
-    configstore.set("lastError", timestamp);
+    Config.setLastError(timestamp);
   } else {
-    configstore.delete("lastError");
+    Config.deleteLastError();
   }
 });
 // require("exit-code");

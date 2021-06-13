@@ -1,7 +1,7 @@
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
 
-import { CueMeInError } from "./error";
+import { MKayError } from "./error";
 
 /**
  * Question type for inquirer. See
@@ -34,11 +34,11 @@ export async function prompt(
 
   if (prompts.length && options.nonInteractive) {
     const missingOptions = _.uniq(_.map(prompts, "name")).join(", ");
-    throw new CueMeInError(
+    throw new MKayError(
       `Missing required options (${missingOptions}) while running in non-interactive mode`,
       {
         children: prompts,
-        exit: 1
+        exit: 1,
       }
     );
   }

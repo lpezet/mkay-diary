@@ -12,12 +12,12 @@ const DEFAULT_CHILDREN: NonNullable<MKayErrorOptions["children"]> = [];
 const DEFAULT_EXIT: NonNullable<MKayErrorOptions["exit"]> = 1;
 const DEFAULT_STATUS: NonNullable<MKayErrorOptions["status"]> = 500;
 
-export class CueMeInError extends Error {
+export class MKayError extends Error {
   readonly children: unknown[];
   readonly context: unknown | undefined;
   readonly exit: number;
   readonly message: string;
-  readonly name = "CueMeInError";
+  readonly name = "MKayError";
   readonly original: Error | undefined;
   readonly status: number;
 

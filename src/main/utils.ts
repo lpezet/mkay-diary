@@ -5,7 +5,7 @@ import { statSync } from "fs";
 import * as crypto from "crypto";
 
 // import { configstore } from "./configstore";
-import { CueMeInError } from "./error";
+import { MKayError } from "./error";
 import { createLogger } from "./logger";
 
 const IS_WINDOWS = process.platform === "win32";
@@ -94,7 +94,7 @@ export function addSubdomain(origin: string, subdomain: string): string {
  * @return Promise<Error>
  */
 export function reject(message: string, options?: any): Promise<Error> {
-  return Promise.reject(new CueMeInError(message, options));
+  return Promise.reject(new MKayError(message, options));
 }
 
 /**
@@ -102,7 +102,7 @@ export function reject(message: string, options?: any): Promise<Error> {
  */
 export function explainStdin(): void {
   if (IS_WINDOWS) {
-    throw new CueMeInError("STDIN input is not available on Windows.", {
+    throw new MKayError("STDIN input is not available on Windows.", {
       exit: 1,
     });
   }
@@ -154,6 +154,14 @@ export type SettledPromise<T> =
   | SettledPromiseResolved<T>
   | SettledPromiseRejected;
 
+// NB: Couldn't seem to use generics like promiseAllSimpleSeq<T> (requires then a "startingValue:T") and use it with "Provise<void>"-type array...
+export function promiseAllSimpleSeq(promises: Promise<void>[]): Promise<void> {
+  return promises.reduce(
+    (promise: Promise<void>, nextPromise: Promise<void>) =>
+      promise.then(() => nextPromise),
+    Promise.resolve()
+  );
+}
 /**
  * Returns a single Promise that is resolved when all the given promises have
  * either resolved or rejected.
