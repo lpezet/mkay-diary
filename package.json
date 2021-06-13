@@ -1,9 +1,14 @@
 {
-  "name": "sequelize-test",
+  "name": "mkay-diary",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "copy-templates.old": "[ ! -d lib/src/main/templates ] && mkdir lib/src/main/templates; cp -r src/main/templates/ lib/src/main/templates/; [ ! -d lib/src/main/core/templates ] && mkdir lib/src/main/core/templates; cp -r src/main/core/templates/ lib/src/main/core/templates/",
+    "copy-templates": "echo 'No templates to copy for now.'",
+    "dist": "npm run clean && npm run tsc -- --build tsconfig.publish.json && npm run copy-templates && chmod +x lib/src/bin/mkay.js",
+    "tsc": "tsc",
+    "clean": "rimraf lib",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",
     "lint": "eslint src/main/ --ext .ts",
@@ -13,7 +18,7 @@
     "test": "npm run lint -- --quiet && npm run mocha"
   },
   "engines": {
-    "node": ">= 8.0.0"
+    "node": ">= 14.0.0"
   },
   "author": "",
   "license": "ISC",
@@ -21,7 +26,7 @@
     "cli-color": "^2.0.0",
     "cli-spinner": "^0.2.10",
     "commander": "^7.2.0",
-    "configstore": "^6.0.0",
+    "configstore": "5.0.1",
     "didyoumean": "^1.2.1",
     "exit-code": "^1.0.2",
     "javascript-time-ago": "^2.3.6",
@@ -32,9 +37,15 @@
     "uuid": "^7.0.3"
   },
   "devDependencies": {
+    "@types/cli-color": "^2.0.0",
+    "@types/configstore": "^5.0.0",
     "@types/inquirer": "^6.0.3",
     "@types/lodash": "^4.14.149",
     "@types/node": "^14.14.31",
+    "@types/semver": "^7.3.6",
+    "@types/universal-analytics": "^0.4.4",
+    "@types/update-notifier": "^5.0.0",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
     "eslint": "^7.21.0",
