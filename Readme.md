@@ -56,6 +56,7 @@ mkay g
 This is where the diary of this project is embedded.
 
 <!-- e4a49e0START mkay-diary -->
+
 [//]: # (DO NOT EDIT THE FOLLOWING. This content is automatically generated from diary entries.)
 
 ## Entry for 06/02/21
@@ -83,11 +84,7 @@ For #2 above, tags could simply be `START mkay-diary` and `END mkay-diary`, and 
 Need to convert `mkay` from `bash` to `nodejs` (`typescript` of course).
 This will allow from better handling of files (tags, replacing, etc.) but more importantly easier, more efficient, cross-platform, and most importantly, more testable.
 
-# Entry for 06/13/2021
-
-First day converting app to Node.js. So far so good.
-
-# Entry for 06/15/2021
+## Entry for 06/15/2021
 
 New entry.
 
