@@ -1,18 +1,23 @@
 import * as _ from "lodash";
-import * as clc from "cli-color";
+// import * as clc from "cli-color";
 import { Readable } from "stream";
-import { statSync } from "fs";
+import * as fs from "fs";
 import * as crypto from "crypto";
+import * as path from "path";
 
 // import { configstore } from "./configstore";
-import { MKayError } from "./error";
-import { createLogger } from "./logger";
+// import { MKayError } from "./error";
+// import { createLogger } from "./logger";
 
-const IS_WINDOWS = process.platform === "win32";
-const LOGGER = createLogger("utils");
+// const IS_WINDOWS = process.platform === "win32";
+// const LOGGER = createLogger("utils");
 
 export const envOverrides: string[] = [];
 
+export type FileInfo = {
+  name: string;
+  time: number;
+};
 /**
  * Create a CueMeIn Console URL for the specified path and project.
  *
@@ -82,9 +87,9 @@ export function envOverride(
  * @param subdomain Subdomain
  * @return string
  */
-export function addSubdomain(origin: string, subdomain: string): string {
-  return origin.replace("//", `//${subdomain}.`);
-}
+// export function addSubdomain(origin: string, subdomain: string): string {
+//  return origin.replace("//", `//${subdomain}.`);
+// }
 
 /**
  * Return a promise that rejects with a CueMeInError.
@@ -93,13 +98,14 @@ export function addSubdomain(origin: string, subdomain: string): string {
  * @param options Options
  * @return Promise<Error>
  */
-export function reject(message: string, options?: any): Promise<Error> {
-  return Promise.reject(new MKayError(message, options));
-}
+// export function reject(message: string, options?: any): Promise<Error> {
+//   return Promise.reject(new MKayError(message, options));
+// }
 
 /**
  * Print out an explanatory message if a TTY is detected for how to manage STDIN
  */
+/*
 export function explainStdin(): void {
   if (IS_WINDOWS) {
     throw new MKayError("STDIN input is not available on Windows.", {
@@ -113,7 +119,7 @@ export function explainStdin(): void {
     );
   }
 }
-
+*/
 /**
  * Convert text input to a Readable stream.
  *
@@ -136,9 +142,9 @@ export function stringToStream(text: string): Readable | undefined {
  * @param parts Parts
  * @return string
  */
-export function endpoint(parts: string[]): string {
-  return `/${_.join(parts, "/")}`;
-}
+// export function endpoint(parts: string[]): string {
+//  return `/${_.join(parts, "/")}`;
+// }
 
 export interface SettledPromiseResolved<T> {
   state: "fulfilled";
@@ -169,6 +175,37 @@ export function promiseAllSeq<T>(
     Promise.resolve(startingValue)
   );
 }
+
+export const findFilesInLexicalOrder = (
+  dir: string,
+  fileFunc: (filename: string) => Promise<void>
+): Promise<void> => {
+  const promises: (() => Promise<void>)[] = [];
+  fs.readdirSync(dir)
+    .map((v: string) => {
+      return {
+        name: v,
+        time: fs.statSync(path.join(dir, v)).mtime.getTime(),
+      } as FileInfo;
+    })
+    .sort((a: FileInfo, b: FileInfo) => {
+      return a.name.localeCompare(b.name);
+    })
+    .forEach((f: FileInfo): void => {
+      const fullPath = path.join(dir, f.name);
+      const stats = fs.statSync(fullPath);
+      if (stats.isDirectory()) {
+        promises.push(() => {
+          return findFilesInLexicalOrder(fullPath, fileFunc);
+        });
+      } else {
+        promises.push(() => {
+          return fileFunc(fullPath);
+        });
+      }
+    });
+  return promiseAllSeq<void>(promises, undefined);
+};
 
 // NB: Couldn't seem to use generics like promiseAllSimpleSeq<T> (requires then a "startingValue:T") and use it with "Provise<void>"-type array...
 /*
@@ -238,6 +275,7 @@ export async function promiseWhile<T>(
  * @param obj Obj
  * @return Promise<any>
  */
+/*
 export async function promiseProps(obj: any): Promise<any> {
   const resultObj: any = {};
   const promises = _.keys(obj).map(async (key: string) => {
@@ -246,14 +284,14 @@ export async function promiseProps(obj: any): Promise<any> {
   });
   return Promise.all(promises).then(() => resultObj);
 }
-
+*/
 /**
  * @param path Path
  * @return boolean
  */
 export function fileExistsSync(path: string): boolean {
   try {
-    return statSync(path).isFile();
+    return fs.statSync(path).isFile();
   } catch (e) {
     return false;
   }
@@ -265,7 +303,7 @@ export function fileExistsSync(path: string): boolean {
  */
 export function dirExistsSync(path: string): boolean {
   try {
-    return statSync(path).isDirectory();
+    return fs.statSync(path).isDirectory();
   } catch (e) {
     return false;
   }

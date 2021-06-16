@@ -1,10 +1,9 @@
 import * as Configstore from "configstore";
 // import logger from "./logger";
-
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-var-requires
-const pkg = require("../../package.json");
+// const pkg = require("../../package.json");
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const cStore = new Configstore(pkg.name);
+const cStore = new Configstore("@lpezet/mkay-diary");
 
 const ConfigConstants: { [key: string]: string } = {
   BASE_DIR: "BASE_DIR",
