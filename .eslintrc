@@ -7,8 +7,5 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
-  ],
-  "rules": {
-    "no-unused-vars": [2, {"args": "after-used", "argsIgnorePattern": "^_"}]
-  }
+  ]
 }

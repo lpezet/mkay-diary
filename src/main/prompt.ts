@@ -43,7 +43,7 @@ export async function prompt(
     );
   }
 
-  const answers = await inquirer.prompt(prompts);
+  const answers: inquirer.Answers = await inquirer.prompt(prompts);
   // lodash's forEach's call back is (value, key); this is not a typo.
   _.forEach(answers, (v, k) => {
     options[k] = v;

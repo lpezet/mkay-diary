@@ -108,7 +108,7 @@ export class AdvancedLogger implements Logger {
     this.log(type, clc.yellow.bold(`${WARNING_CHAR}  ${label}:`), message);
   }
 
-  new(dispatch: Function, name: string): Logger {
+  new(dispatch: (...args: any[]) => void, name: string): Logger {
     return this.logger.new(dispatch, name);
   }
 
@@ -158,7 +158,7 @@ export class AdvancedLogger implements Logger {
     this.clearContext();
   }
 
-  setParseCallStackFunction(parseFunction: Function): void {
+  setParseCallStackFunction(parseFunction: (...args: any[]) => any): void {
     this.logger.setParseCallStackFunction(parseFunction);
   }
 

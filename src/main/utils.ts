@@ -154,7 +154,24 @@ export type SettledPromise<T> =
   | SettledPromiseResolved<T>
   | SettledPromiseRejected;
 
+/**
+ * @param funcs functions
+ * @param startingValue starting value
+ * @return Promise<any>
+ */
+export function promiseAllSeq<T>(
+  funcs: ((res: T) => Promise<T>)[],
+  startingValue: T
+): Promise<T> {
+  return funcs.reduce(
+    (promise: Promise<T>, func: (res: T) => Promise<T>) =>
+      promise.then((result) => func(result)),
+    Promise.resolve(startingValue)
+  );
+}
+
 // NB: Couldn't seem to use generics like promiseAllSimpleSeq<T> (requires then a "startingValue:T") and use it with "Provise<void>"-type array...
+/*
 export function promiseAllSimpleSeq(promises: Promise<void>[]): Promise<void> {
   return promises.reduce(
     (promise: Promise<void>, nextPromise: Promise<void>) =>
@@ -162,6 +179,7 @@ export function promiseAllSimpleSeq(promises: Promise<void>[]): Promise<void> {
     Promise.resolve()
   );
 }
+*/
 /**
  * Returns a single Promise that is resolved when all the given promises have
  * either resolved or rejected.

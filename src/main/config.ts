@@ -1,8 +1,9 @@
 import * as Configstore from "configstore";
 // import logger from "./logger";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-var-requires
 const pkg = require("../../package.json");
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 const cStore = new Configstore(pkg.name);
 
 const ConfigConstants: { [key: string]: string } = {
@@ -61,6 +62,7 @@ class BaseConfig implements Config {
   }
 
   get(key: string): any {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return cStore.get(key);
   }
   set(key: string, val: any): void {
@@ -77,7 +79,7 @@ class BaseConfig implements Config {
     cStore.set(ConfigConstants.EDITOR, val);
   }
   setIncludeHeader(val: boolean): void {
-    cStore.set(ConfigConstants.INCLUDE_HEADER, "" + val);
+    cStore.set(ConfigConstants.INCLUDE_HEADER, val);
   }
   setHint(val: string): void {
     cStore.set(ConfigConstants.HINT, val);
@@ -101,7 +103,7 @@ const ConfigDefaults: { [key: string]: string } = {
 };
 
 // defaults
-const checkConfig = () => {
+const checkConfig = (): void => {
   let k: string;
   for (k in ConfigDefaults) {
     if (cStore.get(k)) continue;
