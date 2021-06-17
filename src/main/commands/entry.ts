@@ -15,29 +15,30 @@ export const pad = (n: number): string => {
 };
 
 export const entry = (): Promise<void> => {
-  const rightNow = new Date();
-  const month = pad(rightNow.getUTCMonth() + 1); // months from 1-12
-  const day = pad(rightNow.getUTCDate());
-  const year = rightNow.getUTCFullYear();
-  const filePath = path.join(
-    Config.entriesDir(),
-    String(year),
-    String(month),
-    `${day}.md`
-  );
-  if (!fs.existsSync(filePath)) {
-    LOGGER.debug(`Creating new file to edit: ${filePath}`);
-    fs.appendFileSync(filePath, `## Entry for ${month}/${day}/${year}\n`);
+  try {
+    const rightNow = new Date();
+    const month = pad(rightNow.getUTCMonth() + 1); // months from 1-12
+    const day = pad(rightNow.getUTCDate());
+    const year = rightNow.getUTCFullYear();
+    const dirPath = path.join(Config.entriesDir(), String(year), String(month));
+    const filePath = path.join(dirPath, `${day}.md`);
+    if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
+    if (!fs.existsSync(filePath)) {
+      LOGGER.debug(`Creating new file to edit: ${filePath}`);
+      fs.appendFileSync(filePath, `## Entry for ${month}/${day}/${year}\n`);
+    }
+    const shell = Config.editor();
+    if (!shell || shell === "") {
+      LOGGER.debug(`Opening ${filePath}...`);
+      open(filePath);
+    } else {
+      LOGGER.debug(`Opening ${filePath} with ${shell}...`);
+      exec(shell + " " + filePath);
+    }
+    return Promise.resolve();
+  } catch (e) {
+    return Promise.reject(e);
   }
-  const shell = Config.editor();
-  if (!shell || shell === "") {
-    LOGGER.debug(`Opening ${filePath}...`);
-    open(filePath);
-  } else {
-    LOGGER.debug(`Opening ${filePath} with ${shell}...`);
-    exec(shell + " " + filePath);
-  }
-  return Promise.resolve();
 };
 
 export function CreateEntryCommand(

@@ -7,18 +7,18 @@ import { Config } from "../../main/config";
 import { fileExistsSync } from "../../main/utils";
 import { exec } from "child_process";
 import open from "open";
-/*
-import { configureLogger } from "../lib";
+import * as rimraf from "rimraf";
+
+import { configureLogger } from "../../main/logger";
 
 configureLogger({
   appenders: {
-    console: { type: "console", layout: { type: "colored" } }
+    console: { type: "console", layout: { type: "colored" } },
   },
   categories: {
-    default: { appenders: ["console"], level: "all" }
-  }
+    default: { appenders: ["console"], level: "all" },
+  },
 });
-*/
 
 /*
 const inspect = (obj: any, depth: number): void => {
@@ -34,13 +34,14 @@ describe("command:entry", function () {
   });
 
   afterEach(function (done: () => void) {
-    fs.unlinkSync(tempDir);
+    rimraf.sync(tempDir);
     done();
   });
 
   it("entry", (done) => {
     try {
       Config.setBaseDir(tempDir);
+      // console.log("Entries dir = ", Config.entriesDir());
       sinon.stub(exec);
       sinon.stub(open);
 

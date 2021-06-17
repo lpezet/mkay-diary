@@ -2,6 +2,7 @@ import { assert } from "chai";
 import * as utils from "../main/utils";
 import * as fs from "fs";
 import * as path from "path";
+import * as rimraf from "rimraf";
 /*
 import { configureLogger } from "../lib";
 
@@ -29,7 +30,7 @@ describe("utils", function () {
   });
 
   afterEach(function (done: () => void) {
-    fs.unlinkSync(tempDir);
+    rimraf.sync(tempDir);
     done();
   });
 
