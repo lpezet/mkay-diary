@@ -27,17 +27,19 @@ const inspect = (obj: any, depth: number): void => {
 */
 
 describe("command:entry", function () {
+  let tempDir: string;
   beforeEach(function (done: () => void) {
+    tempDir = fs.mkdtempSync("mkday");
     done();
   });
 
   afterEach(function (done: () => void) {
+    fs.unlinkSync(tempDir);
     done();
   });
 
   it("entry", (done) => {
     try {
-      const tempDir = fs.mkdtempSync("mkday");
       Config.setBaseDir(tempDir);
       sinon.stub(exec);
       sinon.stub(open);

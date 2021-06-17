@@ -1,9 +1,5 @@
 import * as Configstore from "configstore";
-// import logger from "./logger";
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-var-requires
-// const pkg = require("../../package.json");
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const cStore = new Configstore("@lpezet/mkay-diary");
+import * as path from "path";
 
 const ConfigConstants: { [key: string]: string } = {
   BASE_DIR: "BASE_DIR",
@@ -14,7 +10,7 @@ const ConfigConstants: { [key: string]: string } = {
   LAST_ERROR: "LAST_ERROR",
 };
 
-interface Config {
+export interface Config {
   baseDir: () => string;
   entriesDir: () => string;
   editor: () => string;
@@ -37,79 +33,85 @@ interface Config {
   deleteLastError: () => void;
 }
 
-class BaseConfig implements Config {
+export class BaseConfig implements Config {
+  cStore: Configstore;
+  constructor(id?: string) {
+    id = id ? id : "diary";
+    this.cStore = new Configstore(id, undefined, {
+      globalConfigPath: true,
+      configPath: path.join("." + id, "config.json"),
+    });
+    this._checkConfig();
+  }
+  // defaults
+  _checkConfig(): void {
+    let k: string;
+    for (k in ConfigDefaults) {
+      if (this.cStore.get(k)) continue;
+      this.cStore.set(k, ConfigDefaults[k]);
+    }
+  }
   baseDir(): string {
-    return cStore.get(ConfigConstants.BASE_DIR) as string;
+    return this.cStore.get(ConfigConstants.BASE_DIR) as string;
   }
   entriesDir(): string {
     return this.baseDir() + "/entries";
   }
   editor(): string {
-    return cStore.get(ConfigConstants.EDITOR) as string;
+    return this.cStore.get(ConfigConstants.EDITOR) as string;
   }
   includeHeader(): boolean {
-    return cStore.get(ConfigConstants.INCLUDE_HEADER) as boolean;
+    return this.cStore.get(ConfigConstants.INCLUDE_HEADER) as boolean;
   }
   hint(): string {
-    return cStore.get(ConfigConstants.HINT) as string;
+    return this.cStore.get(ConfigConstants.HINT) as string;
   }
   analyticsTag(): string {
-    return cStore.get(ConfigConstants.ANALYTICS_TAG) as string;
+    return this.cStore.get(ConfigConstants.ANALYTICS_TAG) as string;
   }
   lastError(): number {
-    return cStore.get(ConfigConstants.LAST_ERROR) as number;
+    return this.cStore.get(ConfigConstants.LAST_ERROR) as number;
   }
 
   get(key: string): any {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return cStore.get(key);
+    return this.cStore.get(key);
   }
   set(key: string, val: any): void {
-    return cStore.set(key, val);
+    return this.cStore.set(key, val);
   }
   delete(key: string): void {
-    cStore.delete(key);
+    this.cStore.delete(key);
   }
 
   setBaseDir(val: string): void {
-    cStore.set(ConfigConstants.BASE_DIR, val);
+    this.cStore.set(ConfigConstants.BASE_DIR, val);
   }
   setEditor(val: string): void {
-    cStore.set(ConfigConstants.EDITOR, val);
+    this.cStore.set(ConfigConstants.EDITOR, val);
   }
   setIncludeHeader(val: boolean): void {
-    cStore.set(ConfigConstants.INCLUDE_HEADER, val);
+    this.cStore.set(ConfigConstants.INCLUDE_HEADER, val);
   }
   setHint(val: string): void {
-    cStore.set(ConfigConstants.HINT, val);
+    this.cStore.set(ConfigConstants.HINT, val);
   }
   setAnalyticsTag(val: string): void {
-    cStore.set(ConfigConstants.ANALYTICS_TAG, val);
+    this.cStore.set(ConfigConstants.ANALYTICS_TAG, val);
   }
   setLastError(val: number): void {
-    cStore.set(ConfigConstants.LAST_ERROR, val);
+    this.cStore.set(ConfigConstants.LAST_ERROR, val);
   }
 
   deleteLastError(): void {
-    cStore.delete(ConfigConstants.LAST_ERROR);
+    this.cStore.delete(ConfigConstants.LAST_ERROR);
   }
 }
 
-const ConfigDefaults: { [key: string]: string } = {
+export const ConfigDefaults: { [key: string]: string } = {
   BASE_DIR: ".diary",
   EDITOR: 'open -a "/Applications/Visual Studio Code.app"',
   INCLUDE_HEADER: "false",
 };
-
-// defaults
-const checkConfig = (): void => {
-  let k: string;
-  for (k in ConfigDefaults) {
-    if (cStore.get(k)) continue;
-    cStore.set(k, ConfigDefaults[k]);
-  }
-};
-
-checkConfig();
 
 export const Config = new BaseConfig();

@@ -22,11 +22,14 @@ const inspect = (obj: any, depth: number): void => {
 */
 
 describe("utils", function () {
+  let tempDir: string;
   beforeEach(function (done: () => void) {
+    tempDir = fs.mkdtempSync("mkday");
     done();
   });
 
   afterEach(function (done: () => void) {
+    fs.unlinkSync(tempDir);
     done();
   });
 
@@ -59,14 +62,12 @@ describe("utils", function () {
   });
 
   it("fileExistsSync", () => {
-    const tempDir = fs.mkdtempSync("mkday");
     const tempFile1 = path.join(tempDir, "utils.test.tmp");
     fs.writeFileSync(tempFile1, "Hey there!");
     assert.isTrue(utils.fileExistsSync(tempFile1));
   });
 
   it("dirExistsSync", () => {
-    const tempDir = fs.mkdtempSync("mkday");
     const tempPath1 = path.join(tempDir, "test", "more");
     fs.mkdirSync(tempPath1, { recursive: true });
     assert.isTrue(utils.dirExistsSync(tempPath1));
@@ -119,7 +120,6 @@ describe("utils", function () {
   });
 
   it("findFilesInLexicalOrder", (done) => {
-    const tempDir = fs.mkdtempSync("mkday");
     // # File 1
     const tempPath1 = path.join(tempDir, "2021", "02", "09");
     fs.mkdirSync(tempPath1, { recursive: true });
