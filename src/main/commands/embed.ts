@@ -45,12 +45,14 @@ export class EmbedCommand implements Command {
 
     const startRegexp = new RegExp(sTag);
     const endRegexp = new RegExp(eTag);
+    /*
     const matchesStart = (line: string): boolean => {
       return startRegexp.test(line);
     };
     const matchesEnd = (line: string): boolean => {
       return endRegexp.test(line);
     };
+    */
     const inputFile = fs.readFileSync(file, "utf8");
 
     const diaryFile = path.join(this.config.baseDir(), "full.md");
@@ -61,8 +63,8 @@ export class EmbedCommand implements Command {
     const finalResult = updateSection(
       inputFile,
       section,
-      matchesStart,
-      matchesEnd
+      (line: string): boolean => startRegexp.test(line),
+      (line: string): boolean => endRegexp.test(line)
     );
     // console.log("# RESULT:");
     // console.log("####################################################");
