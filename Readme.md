@@ -121,8 +121,8 @@ New entry.
 
 [npm-image]: https://badge.fury.io/js/%40lpezet%2Fmkay-diary.svg
 [npm-url]: https://npmjs.com/package/@lpezet/mkay-diary
-[travis-image]: https://travis-ci.com/github/lpezet/mkay-diary.svg?branch=master
-[travis-url]: https://travis-ci.com/github/lpezet/mkay-diary
+[travis-image]: https://www.travis-ci.com/lpezet/mkay-diary.svg?branch=master
+[travis-url]: https://www.travis-ci.com/github/lpezet/mkay-diary
 [coveralls-image]: https://coveralls.io/repos/github/lpezet/mkay-diary/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/lpezet/mkay-diary?branch=master
 [appveyor-image]: https://ci.appveyor.com/api/projects/status/hxkr7yml7qhi9jo8?svg=true
