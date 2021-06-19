@@ -2,13 +2,37 @@
 
 Very simple daily entries to embed within your Readme.md.
 
-Run `mkay e` to start a new daily entry or edit the existing entry.
-Run `mkay g` to generate the full diary and embed it (if specified) in your Readme.md.
+[![NPM Version][npm-image]][npm-url]
+[![Linux Build][travis-image]][travis-url]
+[![Windows Build][appveyor-image]][appveyor-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+[![Known Vulnerabilities][vulnerabilities-image]][vulnerabilities-url]
+
+```bash
+mkay-diary entry # to create or edit today's entry
+mkay-diary index # to create full diary
+mkay-diary generate # to embed full diray in Readme.md
+```
 
 # Table of Contents
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Installation](#installation)
+- [Features](#features)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Diary](#diary)
+  - [Entry for 06/02/21](#entry-for-060221)
+  - [Entry for 06/03/21](#entry-for-060321)
+  - [Entry for 06/06/21](#entry-for-060621)
+  - [Entry for 06/10/21](#entry-for-061021)
+  - [Entry for 06/15/2021](#entry-for-06152021)
+- [License](#license)
+- [Publishing](#publishing)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Installation
 
@@ -93,3 +117,24 @@ New entry.
 # License
 
 [MIT](LICENSE)
+
+
+[npm-image]: https://badge.fury.io/js/%40lpezet%2Fmkay-diary.svg
+[npm-url]: https://npmjs.com/package/@lpezet/mkay-diary
+[travis-image]: https://travis-ci.com/github/lpezet/mkay-diary.svg?branch=master
+[travis-url]: https://travis-ci.com/github/lpezet/mkay-diary
+[coveralls-image]: https://coveralls.io/repos/github/lpezet/mkay-diary/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/lpezet/mkay-diary?branch=master
+[appveyor-image]: https://ci.appveyor.com/api/projects/status/hxkr7yml7qhi9jo8?svg=true
+[appveyor-url]: https://ci.appveyor.com/project/lpezet/mkay-diary
+[vulnerabilities-image]: https://snyk.io/test/github/lpezet/mkay-diary/badge.svg
+[vulnerabilities-url]: https://snyk.io/test/github/lpezet/mkay-diary
+
+# Publishing
+
+To publish next version of `mkay-diary`, run the following:
+
+```bash
+npm run dist
+npm publish lib/ --access public
+```
