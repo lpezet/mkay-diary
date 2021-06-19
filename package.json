@@ -48,6 +48,7 @@
     "uuid": "^7.0.3"
   },
   "devDependencies": {
+    "@js-joda/core": "^3.2.0",
     "@types/chai": "^4.2.18",
     "@types/cli-color": "^2.0.0",
     "@types/configstore": "^5.0.0",
