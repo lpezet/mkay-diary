@@ -45,14 +45,15 @@ export class EmbedCommand implements Command {
 
     const startRegexp = new RegExp(sTag);
     const endRegexp = new RegExp(eTag);
-    /*
+
+    // coveralls-ignore-start
     const matchesStart = (line: string): boolean => {
       return startRegexp.test(line);
     };
     const matchesEnd = (line: string): boolean => {
       return endRegexp.test(line);
     };
-    */
+    // coveralls-ignore-end
     const inputFile = fs.readFileSync(file, "utf8");
 
     const diaryFile = path.join(this.config.baseDir(), "full.md");
@@ -63,14 +64,12 @@ export class EmbedCommand implements Command {
     const finalResult = updateSection(
       inputFile,
       section,
-      (line: string): boolean => startRegexp.test(line),
-      (line: string): boolean => endRegexp.test(line)
+      matchesStart,
+      matchesEnd
     );
-    // console.log("# RESULT:");
-    // console.log("####################################################");
-    // console.log(finalResult);
-    // console.log("####################################################");
+    // coveralls-ignore-start
     fs.writeFileSync(file, finalResult);
+    // coveralls-ignore-end
     return Promise.resolve();
   }
 }
