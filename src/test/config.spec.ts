@@ -1,13 +1,13 @@
 import { assert } from "chai";
 import * as utils from "../main/utils";
 import { BaseConfig, Config } from "../main/config";
-import { readFileSync } from "fs";
+import { readFileSync, rmdirSync } from "fs";
 import * as path from "path";
 
 describe("config", () => {
   let config: Config;
-  const baseDir = "testDiary";
-  const expectedConfigDir = ".testDiary";
+  const baseDir = "testConfigDiary";
+  const expectedConfigDir = ".testConfigDiary";
   const expectedConfigFile = path.join(expectedConfigDir, "config.json");
 
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe("config", () => {
   });
 
   after(() => {
-    // unlinkSync(baseDir);
+    rmdirSync(expectedConfigDir, { recursive: true });
   });
 
   const loadConfigFileAsJSON = (): any => {
@@ -25,7 +25,7 @@ describe("config", () => {
   };
 
   it("config_file_exists", () => {
-    const configExists = utils.fileExistsSync(".testDiary/config.json");
+    const configExists = utils.fileExistsSync(".testConfigDiary/config.json");
     assert.isTrue(configExists);
   });
 

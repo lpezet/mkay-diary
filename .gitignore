@@ -4,3 +4,4 @@ lib
 coverage
 .diary/full.md
 .testDiary
+dist

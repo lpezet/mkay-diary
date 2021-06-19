@@ -4,54 +4,68 @@ import * as path from "path";
 import { Config } from "../config";
 import { updateSection } from "../update-section";
 import { createLogger } from "../logger";
+import { Command } from "../command";
 
 const LOGGER = createLogger("command:generate");
-export const embed = (file?: string): Promise<void> => {
-  file = file ? file : "Readme.md";
-  const hint = Config.hint();
-  const START_TAG = `<!-- ${hint}START mkay-diary -->`;
-  const END_TAG = `<!-- ${hint}END mkay-diary -->`;
 
-  const startRegexp = new RegExp(START_TAG);
-  const endRegexp = new RegExp(END_TAG);
-  const matchesStart = (line: string): boolean => {
-    return startRegexp.test(line);
-  };
-  const matchesEnd = (line: string): boolean => {
-    return endRegexp.test(line);
-  };
-  const inputFile = fs.readFileSync(file, "utf8");
-
-  const diaryFile = path.join(Config.baseDir(), "full.md");
-  // TODO: use stream instead...
-  const fullContent = fs.readFileSync(diaryFile, "utf8");
-
-  const section = START_TAG + "\n\n" + fullContent + "\n" + END_TAG;
-  const finalResult = updateSection(
-    inputFile,
-    section,
-    matchesStart,
-    matchesEnd
-  );
-  // console.log("# RESULT:");
-  // console.log("####################################################");
-  // console.log(finalResult);
-  // console.log("####################################################");
-  fs.writeFileSync(file, finalResult);
-  return Promise.resolve();
+export const startTag = (hint?: string): string => {
+  return `<!-- ${hint}START mkay-diary -->`;
 };
-export function CreateGenerateCommand(
-  pProgram: program.CommanderStatic
-): Promise<program.CommanderStatic> {
-  pProgram
-    .command("generate [file]")
-    .alias("g")
-    .description(
-      "Embed full diary within .md file if tags present. By default, uses Readme.md."
-    )
-    .action((file, _options, _command) => {
-      LOGGER.debug("Entering [generate] command...");
-      return embed(file);
-    });
-  return Promise.resolve(pProgram);
+
+export const endTag = (hint?: string): string => {
+  return `<!-- ${hint}END mkay-diary -->`;
+};
+
+export class EmbedCommand implements Command {
+  config: Config;
+  constructor(pConfig: Config) {
+    this.config = pConfig;
+  }
+  register(pProg: program.CommanderStatic): Promise<program.CommanderStatic> {
+    pProg
+      .command("generate [file]")
+      .alias("g")
+      .description(
+        "Embed full diary within .md file if tags present. By default, uses Readme.md."
+      )
+      .action((file, _options, _command) => {
+        LOGGER.debug("Entering [generate] command...");
+        return this.execute(file);
+      });
+    return Promise.resolve(pProg);
+  }
+  execute(file?: string): Promise<void> {
+    file = file ? file : "Readme.md";
+    const hint = this.config.hint();
+    const sTag = startTag(hint);
+    const eTag = endTag(hint);
+
+    const startRegexp = new RegExp(sTag);
+    const endRegexp = new RegExp(eTag);
+    const matchesStart = (line: string): boolean => {
+      return startRegexp.test(line);
+    };
+    const matchesEnd = (line: string): boolean => {
+      return endRegexp.test(line);
+    };
+    const inputFile = fs.readFileSync(file, "utf8");
+
+    const diaryFile = path.join(this.config.baseDir(), "full.md");
+    // TODO: use stream instead...
+    const fullContent = fs.readFileSync(diaryFile, "utf8");
+
+    const section = sTag + "\n\n" + fullContent + "\n" + eTag;
+    const finalResult = updateSection(
+      inputFile,
+      section,
+      matchesStart,
+      matchesEnd
+    );
+    // console.log("# RESULT:");
+    // console.log("####################################################");
+    // console.log(finalResult);
+    // console.log("####################################################");
+    fs.writeFileSync(file, finalResult);
+    return Promise.resolve();
+  }
 }

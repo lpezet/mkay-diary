@@ -1,4 +1,4 @@
-import * as Configstore from "configstore";
+import Configstore from "configstore";
 import * as path from "path";
 
 const ConfigConstants: { [key: string]: string } = {
@@ -31,6 +31,7 @@ export interface Config {
   setLastError: (val: number) => void;
 
   deleteLastError: () => void;
+  deleteEditor: () => void;
 }
 
 export class BaseConfig implements Config {
@@ -106,6 +107,9 @@ export class BaseConfig implements Config {
   deleteLastError(): void {
     this.cStore.delete(ConfigConstants.LAST_ERROR);
   }
+  deleteEditor(): void {
+    this.cStore.delete(ConfigConstants.EDITOR);
+  }
 }
 
 export const ConfigDefaults: { [key: string]: string } = {
@@ -113,5 +117,3 @@ export const ConfigDefaults: { [key: string]: string } = {
   EDITOR: 'open -a "/Applications/Visual Studio Code.app"',
   INCLUDE_HEADER: "false",
 };
-
-export const Config = new BaseConfig();

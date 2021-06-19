@@ -1,12 +1,14 @@
 import * as program from "commander";
 import * as pkg from "../../package.json";
-import { createIndexCommand } from "./commands/full";
-import { CreateGenerateCommand } from "./commands/embed";
-import { CreateEntryCommand } from "./commands/entry";
+import { createIndexCommand, FullCommand } from "./commands/full";
+import { CreateGenerateCommand, EmbedCommand } from "./commands/embed";
+import { CreateEntryCommand, EntryCommand } from "./commands/entry";
 // import { createLogger } from "./logger";
 // const LOGGER = createLogger("main");
 
 import { configureLogger } from "./logger";
+import { BaseConfig } from "./config";
+import { Command } from "./command";
 
 configureLogger({
   appenders: {
@@ -20,6 +22,7 @@ configureLogger({
 export class Main {
   // constructor() {}
   init(): Promise<any> {
+    const config = new BaseConfig();
     program
       .version(pkg.version)
       .description("For manual, use man mkay")
@@ -28,9 +31,16 @@ export class Main {
     //  "-l, --log-level [level]",
     //  "Specify log level: emerg (0), alert (1), crit (2), error (3), warning (4), notice (5), info (6), debug (7)"
     // );
-    return CreateGenerateCommand(program)
-      .then(createIndexCommand)
-      .then(CreateEntryCommand);
+    const commands: Command[] = [
+      new EntryCommand(config),
+      new EmbedCommand(config),
+      new FullCommand(config),
+    ];
+    const registrations: Promise<program.CommanderStatic>[] = [];
+    commands.forEach((c) => {
+      registrations.push(c.register(program));
+    });
+    return Promise.all(registrations);
   }
   run(args: string[]): program.Command {
     // const opts: program.ParseOptions = new program.ParseOptions();
