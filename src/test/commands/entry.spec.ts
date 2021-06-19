@@ -3,13 +3,14 @@ import * as path from "path";
 import * as sinon from "sinon";
 import { EntryCommand, pad } from "../../main/commands/entry";
 import { Config } from "../../main/config";
-import { fileExistsSync } from "../../main/utils";
+import { dirExistsSync, fileExistsSync } from "../../main/utils";
 import { exec } from "child_process";
 import open from "open";
 
 import { configureLogger } from "../../main/logger";
 import { deleteAllTestEntries, TestConfig } from "../helpers/commons";
 import program from "commander";
+import { mkdirSync, writeFileSync } from "fs";
 
 configureLogger({
   appenders: {
@@ -69,7 +70,7 @@ describe("command:entry", function () {
       .catch(done);
   });
 
-  it("open", (done) => {
+  it("openNew", (done) => {
     const command = new EntryCommand(config);
     try {
       config.deleteEditor();
@@ -84,6 +85,39 @@ describe("command:entry", function () {
         `${day}.md`
       );
       assert.isFalse(fileExistsSync(filePath));
+
+      command.execute().then(() => {
+        try {
+          assert.isTrue(fileExistsSync(filePath));
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+    } catch (e) {
+      done(e);
+    } finally {
+      // nop
+    }
+  });
+
+  it("openExisting", (done) => {
+    const command = new EntryCommand(config);
+    try {
+      config.deleteEditor();
+      const rightNow = new Date();
+      const month = pad(rightNow.getUTCMonth() + 1); // months from 1-12
+      const day = pad(rightNow.getUTCDate());
+      const year = rightNow.getUTCFullYear();
+      const dirPath = path.join(
+        config.entriesDir(),
+        String(year),
+        String(month)
+      );
+      const filePath = path.join(dirPath, `${day}.md`);
+      if (!dirExistsSync(dirPath)) mkdirSync(dirPath, { recursive: true });
+      if (!fileExistsSync(filePath))
+        writeFileSync(filePath, "Just to have somethere in there.");
 
       command.execute().then(() => {
         try {
