@@ -62,4 +62,16 @@ describe("config", () => {
     json = loadConfigFileAsJSON();
     assert.notProperty(json, ConfigConstants.LAST_ERROR);
   });
+
+  it("getSetDelete", () => {
+    const expected = 123456789;
+    config.set("test", expected);
+    let json = loadConfigFileAsJSON();
+    assert.property(json, "test");
+    const actual = config.get("test");
+    assert.equal(actual, expected);
+    config.delete("test");
+    json = loadConfigFileAsJSON();
+    assert.notProperty(json, "test");
+  });
 });
