@@ -66,6 +66,9 @@ describe("command:embed", function () {
       const eTag = endTag(hint);
       const originalContent = `# This is a test.\n${sTag}\n${eTag}\n# After tags.`;
       fs.writeFileSync(filePath, originalContent);
+      const fullFileContent = "# This is entry #1\n\n#This is entry #2";
+      const fullFilePath = path.join(config.baseDir(), "full.md");
+      fs.writeFileSync(fullFilePath, fullFileContent);
       command.execute(filePath).then(() => {
         const actualContent = fs.readFileSync(filePath, "utf8");
         assert.notEqual(actualContent, originalContent);
