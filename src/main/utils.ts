@@ -127,9 +127,6 @@ export function explainStdin(): void {
  * @return Readable | undefined
  */
 export function stringToStream(text: string): Readable | undefined {
-  if (!text) {
-    return undefined;
-  }
   const s = new Readable();
   s.push(text);
   s.push(null);
@@ -224,6 +221,7 @@ export function promiseAllSimpleSeq(promises: Promise<void>[]): Promise<void> {
  * @param promises Promises
  * @return Promise<SettledPromise[]>
  */
+/*
 export function promiseAllSettled(
   promises: Array<Promise<any>>
 ): Promise<SettledPromise<any>[]> {
@@ -237,6 +235,7 @@ export function promiseAllSettled(
   });
   return Promise.all(wrappedPromises);
 }
+*/
 
 /**
  * Runs a given function (that returns a Promise) repeatedly while the given
@@ -247,6 +246,7 @@ export function promiseAllSettled(
  * @param interval Interval
  * @return Promise<T>
  */
+/*
 export async function promiseWhile<T>(
   action: () => Promise<T>,
   check: (value: T) => boolean,
@@ -267,7 +267,7 @@ export async function promiseWhile<T>(
     run();
   });
 }
-
+*/
 /**
  * Resolves all Promises at every key in the given object. If a value is not a
  * Promise, it is returned as-is.

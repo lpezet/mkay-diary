@@ -178,4 +178,11 @@ describe("utils", function () {
       }
     });
   });
+
+  it("createCodeVerifierAndChallenge", function (done) {
+    const verAndChal = utils.createCodeVerifierAndChallenge();
+    assert.isNotNull(verAndChal);
+    // do more useful tests...
+    done();
+  });
 });
