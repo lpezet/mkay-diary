@@ -46,14 +46,15 @@ export class EmbedCommand implements Command {
     const startRegexp = new RegExp(sTag);
     const endRegexp = new RegExp(eTag);
 
-    // coveralls-ignore-start
+    /* istanbul ignore next */
     const matchesStart = (line: string): boolean => {
       return startRegexp.test(line);
     };
+    /* istanbul ignore next */
     const matchesEnd = (line: string): boolean => {
       return endRegexp.test(line);
     };
-    // coveralls-ignore-end
+
     const inputFile = fs.readFileSync(file, "utf8");
 
     const diaryFile = path.join(this.config.baseDir(), "full.md");
@@ -67,9 +68,8 @@ export class EmbedCommand implements Command {
       matchesStart,
       matchesEnd
     );
-    // coveralls-ignore-start
+    /* istanbul ignore next */
     fs.writeFileSync(file, finalResult);
-    // coveralls-ignore-end
     return Promise.resolve();
   }
 }
