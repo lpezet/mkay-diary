@@ -9,9 +9,9 @@
   "scripts": {
     "copy-templates.old": "[ ! -d lib/src/main/templates ] && mkdir lib/src/main/templates; cp -r src/main/templates/ lib/src/main/templates/; [ ! -d lib/src/main/core/templates ] && mkdir lib/src/main/core/templates; cp -r src/main/core/templates/ lib/src/main/core/templates/",
     "copy-templates": "echo 'No templates to copy for now.'",
-    "dist": "npm run clean && npm run tsc -- --build tsconfig.publish.json && npm run copy-templates && chmod +x lib/src/bin/mkay.js",
+    "dist": "npm run clean && npm run tsc -- --build tsconfig.publish.json && npm run copy-templates && chmod +x dist/src/bin/mkay-diary.js",
     "tsc": "tsc",
-    "clean": "rimraf lib",
+    "clean": "rimraf dist",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",
     "lint": "eslint src/main/ --ext .ts",

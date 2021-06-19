@@ -38,6 +38,7 @@ export const embed = (file?: string): Promise<void> => {
   // console.log(finalResult);
   // console.log("####################################################");
   fs.writeFileSync(file, finalResult);
+  return Promise.resolve();
 };
 export function CreateGenerateCommand(
   pProgram: program.CommanderStatic

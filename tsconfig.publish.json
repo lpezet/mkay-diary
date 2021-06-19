@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": false,
-    "outDir": "lib",
+    "outDir": "dist",
     "removeComments": true,
     "sourceMap": false,
     "typeRoots": ["node_modules/@types", "src/types"],

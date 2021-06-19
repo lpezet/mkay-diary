@@ -136,5 +136,5 @@ To publish next version of `mkay-diary`, run the following:
 
 ```bash
 npm run dist
-npm publish lib/ --access public
+npm publish dist/ --access public
 ```
