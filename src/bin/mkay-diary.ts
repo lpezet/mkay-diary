@@ -3,7 +3,7 @@
 import * as _ from "lodash";
 import * as clc from "cli-color";
 import * as path from "path";
-import { Config } from "../main/config";
+import { BaseConfig } from "../main/config";
 import { configureLogger } from "../main/logger";
 import * as program from "commander";
 
@@ -69,7 +69,8 @@ process.on("uncaughtException", function (err) {
 // const Fs = require("fs");
 // const { yamlParse } = require("yaml-cfn");
 import { Main } from "../main";
-const main = new Main();
+const config = new BaseConfig();
+const main = new Main(config);
 
 // const settings = {};
 // var oSettingsFile = path.resolve(process.cwd(), "settings.yml");
@@ -91,7 +92,7 @@ process.on("exit", function (code) {
   // }
 
   if (code > 0 && process.stdout.isTTY) {
-    const lastError = Config.lastError() || 0;
+    const lastError = config.lastError() || 0;
     const timestamp = Date.now();
     if (lastError > timestamp - 120000) {
       let help;
@@ -110,9 +111,9 @@ process.on("exit", function (code) {
         console.log(help);
       }
     }
-    Config.setLastError(timestamp);
+    config.setLastError(timestamp);
   } else {
-    Config.deleteLastError();
+    config.deleteLastError();
   }
 });
 // require("exit-code");
