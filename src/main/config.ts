@@ -1,7 +1,7 @@
 import Configstore from "configstore";
 import * as path from "path";
 
-const ConfigConstants: { [key: string]: string } = {
+export const ConfigConstants: { [key: string]: string } = {
   BASE_DIR: "BASE_DIR",
   EDITOR: "EDITOR",
   INCLUDE_HEADER: "INCLUDE_HEADER",
