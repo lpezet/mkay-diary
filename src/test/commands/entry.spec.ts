@@ -9,6 +9,7 @@ import open from "open";
 
 import { configureLogger } from "../../main/logger";
 import { deleteAllTestEntries, TestConfig } from "../helpers/commons";
+import program from "commander";
 
 configureLogger({
   appenders: {
@@ -48,14 +49,26 @@ describe("command:entry", function () {
   });
   /*
   NOT WORKING. Can't just "import * as program from "commander"", because it breaks here...fun times...
-  it("create", (done) => {
-    CreateEntryCommand(program) // not really good
-      .then(done)
-      .catch((err: Error) => {
-        done(err);
-      });
-  });
   */
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+  it("register", (done) => {
+    const command = new EntryCommand(config);
+    command
+      .register(program)
+      .then(() => {
+        let hasCommand = false;
+        program.commands.forEach((c) => {
+          if (c.name() === command.name()) hasCommand = true;
+        });
+        hasCommand
+          ? done()
+          : done(new Error("Command failed to register or missing."));
+      })
+      .catch(done);
+  });
+
   it("open", (done) => {
     const command = new EntryCommand(config);
     try {

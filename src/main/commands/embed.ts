@@ -21,15 +21,18 @@ export class EmbedCommand implements Command {
   constructor(pConfig: Config) {
     this.config = pConfig;
   }
+  name(): string {
+    return "embed";
+  }
   register(pProg: program.CommanderStatic): Promise<program.CommanderStatic> {
     pProg
-      .command("generate [file]")
+      .command("embed [file]")
       .alias("g")
       .description(
         "Embed full diary within .md file if tags present. By default, uses Readme.md."
       )
       .action((file, _options, _command) => {
-        LOGGER.debug("Entering [generate] command...");
+        LOGGER.debug("Entering [embed] command...");
         return this.execute(file);
       });
     return Promise.resolve(pProg);

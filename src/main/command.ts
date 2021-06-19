@@ -1,5 +1,6 @@
-import * as program from "commander";
+import { CommanderStatic } from "commander";
 
 export interface Command {
-  register: (prog: program.CommanderStatic) => Promise<program.CommanderStatic>;
+  name: () => string;
+  register: (prog: CommanderStatic) => Promise<CommanderStatic>;
 }

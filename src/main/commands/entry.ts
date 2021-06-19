@@ -1,4 +1,4 @@
-import * as program from "commander";
+import { CommanderStatic } from "commander";
 // import { MKayError } from "./error";
 import * as fs from "fs";
 import * as path from "path";
@@ -20,7 +20,10 @@ export class EntryCommand implements Command {
   constructor(pConfig: Config) {
     this.config = pConfig;
   }
-  register(pProg: program.CommanderStatic): Promise<program.CommanderStatic> {
+  name(): string {
+    return "entry";
+  }
+  register(pProg: CommanderStatic): Promise<CommanderStatic> {
     pProg
       .command("entry")
       .alias("e")

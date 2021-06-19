@@ -5,6 +5,7 @@ import { configureLogger } from "../../main/logger";
 import { EmbedCommand, endTag, startTag } from "../../main/commands/embed";
 import { deleteAllTestEntries, TestConfig } from "../helpers/commons";
 import { Config } from "../../main/config";
+import program from "commander";
 
 configureLogger({
   appenders: {
@@ -21,7 +22,7 @@ const inspect = (obj: any, depth: number): void => {
 };
 */
 
-describe("command:entry", function () {
+describe("command:embed", function () {
   let config: Config;
   before(function (done: () => void) {
     config = TestConfig;
@@ -38,6 +39,22 @@ describe("command:entry", function () {
   afterEach(function (done: () => void) {
     deleteAllTestEntries();
     done();
+  });
+
+  it("register", (done) => {
+    const command = new EmbedCommand(config);
+    command
+      .register(program)
+      .then(() => {
+        let hasCommand = false;
+        program.commands.forEach((c) => {
+          if (c.name() === command.name()) hasCommand = true;
+        });
+        hasCommand
+          ? done()
+          : done(new Error("Command failed to register or missing."));
+      })
+      .catch(done);
   });
 
   it("basic", (done) => {

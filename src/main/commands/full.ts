@@ -18,13 +18,16 @@ export class FullCommand implements Command {
   constructor(pConfig: Config) {
     this.config = pConfig;
   }
+  name(): string {
+    return "full";
+  }
   register(pProg: program.CommanderStatic): Promise<program.CommanderStatic> {
     pProg
-      .command("index")
+      .command("full")
       .alias("i")
       .description("Create full diary.")
       .action((_params, _options, _command) => {
-        LOGGER.debug("Entering [index] command...");
+        LOGGER.debug("Entering [full] command...");
         return this.execute();
       });
     return Promise.resolve(pProg);
