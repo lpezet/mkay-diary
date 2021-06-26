@@ -125,6 +125,53 @@ This will allow from better handling of files (tags, replacing, etc.) but more i
 ## Entry for 06/15/2021
 
 New entry.
+## 06/26/2021 - Refeactoring and logs
+
+### Refactoring
+
+Need to refactor a couple of commands to make them more testable.
+Somehow Sinon doesn't seem to stub *global* methods like "open" from the open npm package, or "exec" from child_process.
+Must define some simple methods for Entry command, as such:
+
+```js
+export type ChildProcessInfo = {
+  readonly stdout?: string;
+  readonly stderr?: string;
+  readonly killed?: boolean;
+  readonly pid?: number;
+  readonly exitCode?: number | null;
+  readonly signalCode?: NodeJS.Signals | null;
+};
+
+export type Deps = {
+  open: (command: string) => Promise<ChildProcessInfo>;
+  exec: (command: string) => Promise<ChildProcessInfo>;
+};
+```
+
+Same for `Full` command as it reads a bunch of files and write to one file:
+
+```js
+export type Deps = {
+  createWriteStream: typeof fs.createWriteStream;
+  createReadStream: typeof fs.createReadStream;
+};
+```
+
+Constructor for those classes will then look like:
+
+```js
+constructor(pConfig: Config, pDeps: Deps) {
+    this.config = pConfig;
+    this.deps = pDeps;
+}
+```
+
+...in which case the `src/main/index.ts` must be updated accordingly (using open, exec and fs functions for implementations).
+
+### Log file
+
+Log file should reside in Config.baseDir() (`.diary` by default).
 
 <!-- e4a49e0END mkay-diary -->
 

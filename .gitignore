@@ -6,3 +6,4 @@ coverage
 .testDiary
 dist
 .testWorkDir
+.diary/mkay.log

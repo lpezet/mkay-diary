@@ -3,31 +3,10 @@
 import * as _ from "lodash";
 import * as clc from "cli-color";
 import * as path from "path";
+import { existsSync, mkdirSync } from "fs";
 import { BaseConfig } from "../main/config";
 import { configureLogger } from "../main/logger";
 import * as program from "commander";
-
-// const logger = createLogger("cli");
-
-const args = process.argv.slice(2);
-
-const logFilename = path.join(path.resolve(__dirname, "../../"), "mkay.log");
-// const logFilename = path.join("/var/log/", "/cue-me-in.log");
-const debugging = _.includes(args, "--debug");
-const logLevel = process.env.DEBUG || debugging ? "debug" : "info";
-
-configureLogger({
-  appenders: {
-    file: {
-      type: "file",
-      filename: logFilename,
-      maxLogSize: 20971520,
-      backups: 3,
-    },
-    console: { type: "console", layout: { type: "messagePassThrough" } },
-  },
-  categories: { default: { appenders: ["file", "console"], level: logLevel } },
-});
 
 // #region Semver
 // Make check for Node 6, which is no longer supported by the CLI.
@@ -66,30 +45,40 @@ process.on("uncaughtException", function (err) {
 // #endregion
 
 // #region CLI/Main
-// const Fs = require("fs");
-// const { yamlParse } = require("yaml-cfn");
 import { Main } from "../main";
 const config = new BaseConfig();
 const main = new Main(config);
 
-// const settings = {};
-// var oSettingsFile = path.resolve(process.cwd(), "settings.yml");
-// if (Fs.existsSync(oSettingsFile)) {
-//  oSettings = yamlParse(Fs.readFileSync(oSettingsFile, { encoding: "utf8" }));
-// }
+const configDir = path.join(".", config.baseDir());
+if (!existsSync(configDir)) mkdirSync(configDir, { recursive: true });
+
+const args = process.argv.slice(2);
+const logFilename = path.join(configDir, "mkay.log");
+const debugging = _.includes(args, "--debug");
+const logLevel = process.env.DEBUG || debugging ? "debug" : "info";
+
+configureLogger({
+  appenders: {
+    file: {
+      type: "file",
+      filename: logFilename,
+      maxLogSize: 20971520,
+      backups: 3,
+    },
+    console: { type: "console", layout: { type: "messagePassThrough" } },
+  },
+  categories: { default: { appenders: ["file", "console"], level: logLevel } },
+});
+
 let cmd: program.Command;
 main.init().then(() => {
   cmd = main.run(process.argv);
 });
-// const cmd: Command = main.run(process.argv);
 // #endregion
 
 // #region On Exit and On Uncaught
 process.on("exit", function (code) {
   code = process.exitCode || code;
-  // if (!debugging && code < 2 && fsutils.fileExistsSync(logFilename)) {
-  //  fs.unlinkSync(logFilename);
-  // }
 
   if (code > 0 && process.stdout.isTTY) {
     const lastError = config.lastError() || 0;
@@ -100,10 +89,9 @@ process.on("exit", function (code) {
         const commandName = _.get(_.last(cmd.args), "_name", "[command]");
         help =
           "Having trouble? Try " +
-          clc.bold("cue-me-in " + commandName + " --help");
+          clc.bold("mkay-diary " + commandName + " --help");
       } else {
-        help =
-          "Having trouble? Try again or contact support with contents of cue-me-in-debug.log";
+        help = `Having trouble? Try again or contact support with contents of ${logFilename}`;
       }
 
       if (cmd) {
@@ -116,4 +104,4 @@ process.on("exit", function (code) {
     config.deleteLastError();
   }
 });
-// require("exit-code");
+// #endregion

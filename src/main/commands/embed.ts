@@ -40,8 +40,8 @@ export class EmbedCommand implements Command {
   execute(file?: string): Promise<void> {
     file = file ? file : "Readme.md";
     const hint = this.config.hint();
-    const sTag = startTag(hint);
-    const eTag = endTag(hint);
+    const sTag = startTag(hint || "");
+    const eTag = endTag(hint || "");
 
     const startRegexp = new RegExp(sTag);
     const endRegexp = new RegExp(eTag);
