@@ -36,7 +36,7 @@ import * as pkg from "../../package.json";
 const nodeVersion = process.version;
 if (!semver.satisfies(nodeVersion, pkg.engines.node)) {
   console.error(
-    "CueMeIn CLI v" +
+    "Mkay Diary v" +
       pkg.version +
       " is incompatible with Node.js " +
       nodeVersion +

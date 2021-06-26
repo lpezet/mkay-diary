@@ -4,13 +4,14 @@ import { FullCommand } from "./commands/full";
 import { EmbedCommand } from "./commands/embed";
 import { ChildProcessInfo, EntryCommand } from "./commands/entry";
 
-import { configureLogger } from "./logger";
 import { BaseConfig, Config } from "./config";
 import { Command } from "./command";
 import open from "open";
 import { ChildProcess, exec, ExecException } from "child_process";
 import { Readable } from "stream";
 
+/*
+import { configureLogger } from "./logger";
 configureLogger({
   appenders: {
     console: { type: "console", layout: { type: "colored" } },
@@ -19,6 +20,7 @@ configureLogger({
     default: { appenders: ["console"], level: "all" },
   },
 });
+*/
 
 import { createLogger } from "./logger";
 import { createReadStream, createWriteStream } from "fs";
