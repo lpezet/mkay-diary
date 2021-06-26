@@ -1,11 +1,13 @@
 import { assert } from "chai";
 import * as path from "path";
-import * as sinon from "sinon";
-import { EntryCommand, pad } from "../../main/commands/entry";
+import {
+  ChildProcessInfo,
+  Deps,
+  EntryCommand,
+  pad,
+} from "../../main/commands/entry";
 import { Config } from "../../main/config";
 import { dirExistsSync, fileExistsSync } from "../../main/utils";
-import { exec } from "child_process";
-import open from "open";
 
 import { configureLogger } from "../../main/logger";
 import { deleteAllTestEntries, TestConfig } from "../helpers/commons";
@@ -27,24 +29,33 @@ const inspect = (obj: any, depth: number): void => {
 };
 */
 
+const noOpOpen = (command: string): Promise<ChildProcessInfo> => {
+  return Promise.resolve({ stdout: command });
+};
+const noOpExec = (command: string): Promise<ChildProcessInfo> => {
+  return Promise.resolve({ stdout: command });
+};
+
+const noOpDeps: Deps = {
+  open: noOpOpen,
+  exec: noOpExec,
+};
+
 describe("command:entry", function () {
   let config: Config;
-  before(function (done: () => void) {
-    sinon.stub(exec);
-    sinon.stub(open);
+  before((done: () => void) => {
     done();
   });
-  after(function (done: () => void) {
-    sinon.reset();
+  after((done: () => void) => {
     deleteAllTestEntries();
     done();
   });
-  beforeEach(function (done: () => void) {
+  beforeEach((done: () => void) => {
     config = TestConfig;
     done();
   });
 
-  afterEach(function (done: () => void) {
+  afterEach((done: () => void) => {
     deleteAllTestEntries();
     done();
   });
@@ -55,7 +66,7 @@ describe("command:entry", function () {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   it("register", (done) => {
-    const command = new EntryCommand(config);
+    const command = new EntryCommand(config, noOpDeps);
     command
       .register(program)
       .then(() => {
@@ -71,7 +82,7 @@ describe("command:entry", function () {
   });
 
   it("openNew", (done) => {
-    const command = new EntryCommand(config);
+    const command = new EntryCommand(config, noOpDeps);
     try {
       config.deleteEditor();
       const rightNow = new Date();
@@ -102,7 +113,7 @@ describe("command:entry", function () {
   });
 
   it("openExisting", (done) => {
-    const command = new EntryCommand(config);
+    const command = new EntryCommand(config, noOpDeps);
     try {
       config.deleteEditor();
       const rightNow = new Date();
@@ -135,7 +146,7 @@ describe("command:entry", function () {
   });
 
   it("exec", (done) => {
-    const command = new EntryCommand(config);
+    const command = new EntryCommand(config, noOpDeps);
     try {
       config.setEditor("something_that_does_not_matter");
       // console.log("Entries dir = ", Config.entriesDir());

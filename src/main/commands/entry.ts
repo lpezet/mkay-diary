@@ -2,11 +2,8 @@ import { CommanderStatic } from "commander";
 // import { MKayError } from "./error";
 import * as fs from "fs";
 import * as path from "path";
-import { exec } from "child_process";
-
 import { createLogger } from "../logger";
 import { Config } from "../config";
-import open from "open";
 import { Command } from "../command";
 
 const LOGGER = createLogger("command:entry");
@@ -15,10 +12,25 @@ export const pad = (n: number): string => {
   return n < 10 ? "0" + String(n) : String(n);
 };
 
+export type ChildProcessInfo = {
+  readonly stdout?: string;
+  readonly stderr?: string;
+  readonly killed?: boolean;
+  readonly pid?: number;
+  readonly exitCode?: number | null;
+  readonly signalCode?: NodeJS.Signals | null;
+};
+export type Deps = {
+  open: (command: string) => Promise<ChildProcessInfo>;
+  exec: (command: string) => Promise<ChildProcessInfo>;
+};
+
 export class EntryCommand implements Command {
   config: Config;
-  constructor(pConfig: Config) {
+  deps: Deps;
+  constructor(pConfig: Config, pDeps: Deps) {
     this.config = pConfig;
+    this.deps = pDeps;
   }
   name(): string {
     return "entry";
@@ -54,12 +66,13 @@ export class EntryCommand implements Command {
       const shell = this.config.editor();
       if (!shell || shell === "") {
         LOGGER.debug(`Opening ${filePath}...`);
-        open(filePath);
+        return this.deps.open(filePath).then(() => Promise.resolve());
       } else {
         LOGGER.debug(`Opening ${filePath} with ${shell}...`);
-        exec(shell + " " + filePath);
+        return this.deps
+          .exec(shell + " " + filePath)
+          .then(() => Promise.resolve());
       }
-      return Promise.resolve();
     } catch (e) {
       return Promise.reject(e);
     }

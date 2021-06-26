@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import * as utils from "../main/utils";
 import { BaseConfig, Config, ConfigConstants } from "../main/config";
-import { readFileSync, rmdirSync } from "fs";
+import { readFileSync, rmSync } from "fs";
 import * as path from "path";
 
 describe("config", () => {
@@ -15,7 +15,7 @@ describe("config", () => {
   });
 
   after(() => {
-    rmdirSync(expectedConfigDir, { recursive: true });
+    rmSync(expectedConfigDir, { recursive: true });
   });
 
   const loadConfigFileAsJSON = (): any => {
