@@ -10,13 +10,20 @@ const LOGGER = createLogger("command:index");
 import { findFilesInLexicalOrder } from "../utils";
 import { Command } from "../command";
 
+export type Deps = {
+  createWriteStream: typeof fs.createWriteStream;
+  createReadStream: typeof fs.createReadStream;
+};
+
 export const PRELUDE =
   "[//]: # (DO NOT EDIT THE FOLLOWING. This content is automatically generated from diary entries.)";
 
 export class FullCommand implements Command {
   config: Config;
-  constructor(pConfig: Config) {
+  deps: Deps;
+  constructor(pConfig: Config, pDeps: Deps) {
     this.config = pConfig;
+    this.deps = pDeps;
   }
   name(): string {
     return "full";
@@ -34,13 +41,13 @@ export class FullCommand implements Command {
   }
   execute(): Promise<void> {
     const concatFile = path.join(this.config.baseDir(), "full.md");
-    const wStream = fs.createWriteStream(concatFile, { start: 0 });
+    const wStream = this.deps.createWriteStream(concatFile, { start: 0 });
     wStream.write(PRELUDE + "\n\n");
-    return findFilesInLexicalOrder(
+    const oFilesProcessed = findFilesInLexicalOrder(
       this.config.entriesDir(),
       (filename: string): Promise<void> => {
         return new Promise<void>((resolve, reject) => {
-          const rStream = fs.createReadStream(filename);
+          const rStream = this.deps.createReadStream(filename);
           rStream.pipe(wStream, { end: false });
           rStream.on("end", () => {
             wStream.write("\n");
@@ -53,20 +60,22 @@ export class FullCommand implements Command {
               `Error from reading [${filename}] to create full diary.`,
               err
             );
-            reject();
+            reject(err);
           });
-        }).catch((err: Error) => {
-          LOGGER.error("Error (1) creating full diary.", err);
         });
         // rStream.close();
         // wStream.write(fs.readFileSync(filename) + "\n");
       }
-    )
-      .then(() => {
-        wStream.close();
-      })
+    );
+
+    return oFilesProcessed.finally(() => {
+      wStream.close();
+    });
+    /*
       .catch((err: Error) => {
         LOGGER.error("Error (2) creating full diary.", err);
+        throw err;
       });
+      */
   }
 }

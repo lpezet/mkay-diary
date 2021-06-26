@@ -6,7 +6,7 @@ import { fileExistsSync } from "../../main/utils";
 import * as joda from "@js-joda/core";
 
 import { configureLogger } from "../../main/logger";
-import { FullCommand, PRELUDE } from "../../main/commands/full";
+import { Deps, FullCommand, PRELUDE } from "../../main/commands/full";
 import { deleteAllTestEntries, TestConfig } from "../helpers/commons";
 import { pad } from "../../main/commands/entry";
 import program from "commander";
@@ -25,6 +25,30 @@ const inspect = (obj: any, depth: number): void => {
   console.error(util.inspect(obj, false, depth || 5, true));
 };
 */
+
+class StreamError extends fs.ReadStream {
+  constructor(opts: any) {
+    super(opts);
+  }
+  on(event: string | symbol, listener: (...args: any[]) => void): this {
+    if (event === "error") {
+      setTimeout(() => {
+        this.emit("error", new Error("Error for testing purposes"));
+      }, 0);
+    }
+    return super.on(event, listener);
+  }
+}
+
+const standardDeps: Deps = {
+  createReadStream: fs.createReadStream,
+  createWriteStream: fs.createWriteStream,
+};
+
+const errorReadDeps: Deps = {
+  createWriteStream: fs.createWriteStream,
+  createReadStream: (path: fs.PathLike) => new StreamError(path),
+};
 
 describe("command:full", function () {
   let config: Config;
@@ -46,7 +70,27 @@ describe("command:full", function () {
     done();
   });
 
-  const createDiaryEntry = (
+  const createTestEntries = (): string => {
+    let fullContent = "";
+    const now = joda.LocalDate.now();
+    let moment: joda.LocalDate = now.minusDays(10);
+    let content: string;
+    for (let i = 0; i < 10; i++) {
+      content = `This is entry #${i}.`;
+      createTestDiaryEntry(
+        moment.year(),
+        moment.monthValue(),
+        moment.dayOfMonth(),
+        content
+      );
+      fullContent += content + "\n";
+      // if (i > 0) expected += "\n";
+      moment = moment.plusDays(1);
+    }
+    return fullContent;
+  };
+
+  const createTestDiaryEntry = (
     pYear: number,
     pMonth: number,
     pDay: number,
@@ -62,7 +106,7 @@ describe("command:full", function () {
   };
 
   it("register", (done) => {
-    const command = new FullCommand(config);
+    const command = new FullCommand(config, standardDeps);
     command
       .register(program)
       .then(() => {
@@ -78,24 +122,10 @@ describe("command:full", function () {
   });
 
   it("basic", (done) => {
-    const command = new FullCommand(config);
+    const command = new FullCommand(config, standardDeps);
     try {
-      const now = joda.LocalDate.now();
-      let moment: joda.LocalDate = now.minusDays(10);
-      let expected = PRELUDE + "\n\n";
-      let content: string;
-      for (let i = 0; i < 10; i++) {
-        content = `This is entry #${i}.`;
-        createDiaryEntry(
-          moment.year(),
-          moment.monthValue(),
-          moment.dayOfMonth(),
-          content
-        );
-        expected += content + "\n";
-        // if (i > 0) expected += "\n";
-        moment = moment.plusDays(1);
-      }
+      const fullContent = createTestEntries();
+      const expected = PRELUDE + "\n\n" + fullContent;
       command
         .execute()
         .then(() => {
@@ -113,5 +143,18 @@ describe("command:full", function () {
     } finally {
       // nop
     }
+  });
+
+  it("error", (done) => {
+    const command = new FullCommand(config, errorReadDeps);
+    createTestEntries(); // just so that utils.findFilesInLexicalOrder() works
+    command
+      .execute()
+      .then(() => {
+        done(new Error("Expected error."));
+      })
+      .catch(() => {
+        done();
+      });
   });
 });

@@ -49,6 +49,22 @@ describe("utils", function () {
     };
   };
 
+  const newGenericSeqPromise = (
+    func: (
+      resolve: (value: void | PromiseLike<void>) => void,
+      reject: (reason?: any) => void
+    ) => void,
+    waitTime: number
+  ): (() => Promise<void>) => {
+    return () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          func(resolve, reject);
+        }, waitTime);
+      });
+    };
+  };
+
   it("getInheritedOption", () => {
     const expected = "Good";
     const opts = {
@@ -177,6 +193,59 @@ describe("utils", function () {
         done(e);
       }
     });
+  });
+
+  it("seqWithOneError", function (done) {
+    const sequence: string[] = [];
+    const promises: (() => Promise<void>)[] = [];
+    promises.push(newSeqPromise("A", sequence, Math.random() * 100));
+    promises.push(
+      newGenericSeqPromise((_resolve, reject) => {
+        reject(new Error("Error for testing purposes."));
+      }, Math.random() * 50)
+    );
+    promises.push(newSeqPromise("C", sequence, Math.random() * 10));
+    utils
+      .promiseAllSeq(promises, undefined)
+      .then(() => {
+        done(new Error("Expected error."));
+      })
+      .catch((_err: Error) => {
+        assert.deepEqual(sequence, ["A"]);
+        done();
+      });
+  });
+
+  it("seqWithAllError", function (done) {
+    const sequence: string[] = [];
+    const promises: (() => Promise<void>)[] = [];
+    promises.push(
+      newGenericSeqPromise((_resolve, reject) => {
+        sequence.push("A");
+        reject(new Error("(A) Error for testing purposes."));
+      }, Math.random() * 100)
+    );
+    promises.push(
+      newGenericSeqPromise((_resolve, reject) => {
+        sequence.push("B");
+        reject(new Error("(B) Error for testing purposes."));
+      }, Math.random() * 50)
+    );
+    promises.push(
+      newGenericSeqPromise((_resolve, reject) => {
+        sequence.push("C");
+        reject(new Error("(C) Error for testing purposes."));
+      }, Math.random() * 10)
+    );
+    utils
+      .promiseAllSeq(promises, undefined)
+      .then(() => {
+        done(new Error("Expected error."));
+      })
+      .catch((_err: Error) => {
+        assert.deepEqual(sequence, ["A"]);
+        done();
+      });
   });
 
   it("createCodeVerifierAndChallenge", function (done) {

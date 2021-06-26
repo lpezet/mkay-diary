@@ -3,8 +3,6 @@ import * as pkg from "../../package.json";
 import { FullCommand } from "./commands/full";
 import { EmbedCommand } from "./commands/embed";
 import { ChildProcessInfo, EntryCommand } from "./commands/entry";
-// import { createLogger } from "./logger";
-// const LOGGER = createLogger("main");
 
 import { configureLogger } from "./logger";
 import { BaseConfig, Config } from "./config";
@@ -22,6 +20,9 @@ configureLogger({
   },
 });
 
+import { createLogger } from "./logger";
+const LOGGER = createLogger("main");
+
 const readAllFromReadable = async (r: Readable | null): Promise<string> => {
   if (!r) return "";
   const chunks = [];
@@ -35,6 +36,7 @@ const myOpen = (command: string): Promise<ChildProcessInfo> => {
   return open(command).then(async (cp: ChildProcess) => {
     const stdout = await readAllFromReadable(cp.stdout);
     const stderr = await readAllFromReadable(cp.stderr);
+    LOGGER.debug(`open result: stdout=[${stdout}], stderr=[${stderr}]`);
     return Promise.resolve({
       stdout,
       stderr,
@@ -50,6 +52,7 @@ const myExec = (command: string): Promise<ChildProcessInfo> => {
     exec(
       command,
       (error: ExecException | null, stdout: string, stderr: string) => {
+        LOGGER.debug(`exec callback: stdout=[${stdout}], stderr=[${stderr}]`);
         if (error) reject(error);
         else resolve({ stderr: stderr, stdout: stdout });
       }
