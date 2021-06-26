@@ -21,6 +21,7 @@ configureLogger({
 });
 
 import { createLogger } from "./logger";
+import { createReadStream, createWriteStream } from "fs";
 const LOGGER = createLogger("main");
 
 const readAllFromReadable = async (r: Readable | null): Promise<string> => {
@@ -77,7 +78,10 @@ export class Main {
     const commands: Command[] = [
       new EntryCommand(this.config, { open: myOpen, exec: myExec }),
       new EmbedCommand(this.config),
-      new FullCommand(this.config),
+      new FullCommand(this.config, {
+        createReadStream: createReadStream,
+        createWriteStream: createWriteStream,
+      }),
     ];
     const registrations: Promise<program.CommanderStatic>[] = [];
     commands.forEach((c) => {
