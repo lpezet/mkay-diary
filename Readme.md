@@ -30,6 +30,9 @@ mkay-diary generate # to embed full diray in Readme.md
   - [Entry for 06/06/21](#entry-for-060621)
   - [Entry for 06/10/21](#entry-for-061021)
   - [Entry for 06/15/2021](#entry-for-06152021)
+  - [06/26/2021 - Refeactoring and logs](#06262021---refeactoring-and-logs)
+    - [Refactoring](#refactoring)
+    - [Log file](#log-file)
 - [License](#license)
 - [Publishing](#publishing)
 
