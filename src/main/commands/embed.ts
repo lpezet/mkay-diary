@@ -27,7 +27,7 @@ export class EmbedCommand implements Command {
   register(pProg: program.CommanderStatic): Promise<program.CommanderStatic> {
     pProg
       .command("embed [file]")
-      .alias("g")
+      .alias("b")
       .description(
         "Embed full diary within .md file if tags present. By default, uses Readme.md."
       )

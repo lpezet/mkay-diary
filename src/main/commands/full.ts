@@ -24,7 +24,7 @@ export class FullCommand implements Command {
   register(pProg: program.CommanderStatic): Promise<program.CommanderStatic> {
     pProg
       .command("full")
-      .alias("i")
+      .alias("f")
       .description("Create full diary.")
       .action((_params, _options, _command) => {
         LOGGER.debug("Entering [full] command...");

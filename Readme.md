@@ -20,6 +20,7 @@ mkay-diary generate # to embed full diray in Readme.md
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Installation](#installation)
+- [Setup](#setup)
 - [Features](#features)
 - [Usage](#usage)
 - [Configuration](#configuration)
@@ -35,6 +36,13 @@ mkay-diary generate # to embed full diray in Readme.md
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Installation
+
+```bash
+npm install --global @lpezet/mkay-diary
+```
+
+# Setup
+
 
 To generate full diary within your `Readme.md`, simply add the following tags:
 
@@ -54,7 +62,9 @@ Other times, without being away too long, it helps reading through a train a tho
 To create a new entry, or edit the current day's entry, run:
 
 ```bash
-mkay e
+mkay-diary e
+or
+mkay-diary entry
 ```
 
 This will create (or edit) a file in `.diary/entries/` folder, using a path like `YYYY/mm/DD`. So if we are in March 7th 2021, the entry would be `.diary/entries/2021/03/07.md`.
@@ -62,7 +72,9 @@ This will create (or edit) a file in `.diary/entries/` folder, using a path like
 To generate the full diary, run:
 
 ```bash
-mkay i
+mkay-diary full
+or
+mkay-diary f
 ```
 
 This will generate `.diary/full.md` using all entries in `.diary/entries/`.
@@ -70,7 +82,9 @@ This will generate `.diary/full.md` using all entries in `.diary/entries/`.
 To embed all those entries in your `Readme.md`, add the necessary tags and run:
 
 ```bash
-mkay g
+mkay-diary embed
+or
+mkay-diary b
 ```
 
 # Configuration
