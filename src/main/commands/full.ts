@@ -5,7 +5,7 @@ import * as path from "path";
 
 import { Config } from "../config";
 
-const LOGGER = createLogger("command:index");
+const LOGGER = createLogger("command:full");
 
 import { findFilesInLexicalOrder } from "../utils";
 import { Command } from "../command";

@@ -48,7 +48,6 @@ process.on("uncaughtException", function (err) {
 import { Main } from "../main";
 const config = new BaseConfig();
 const main = new Main(config);
-
 const configDir = path.join(".", config.baseDir());
 if (!existsSync(configDir)) mkdirSync(configDir, { recursive: true });
 
@@ -67,7 +66,9 @@ configureLogger({
     },
     console: { type: "console", layout: { type: "messagePassThrough" } },
   },
-  categories: { default: { appenders: ["file", "console"], level: logLevel } },
+  categories: {
+    default: { appenders: ["file", "console"], level: logLevel },
+  },
 });
 
 let cmd: program.Command;

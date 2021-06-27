@@ -9,8 +9,12 @@ config.setBaseDir("." + "testWorkDir");
 export const TestConfig = config;
 
 export const deleteAllTestEntries = (): void => {
-  if (dirExistsSync(TestConfig.entriesDir()))
-    rmSync(TestConfig.entriesDir(), { recursive: true });
-  const fullFilePath = path.join(TestConfig.baseDir(), "full.md");
-  if (fileExistsSync(fullFilePath)) rmSync(fullFilePath);
+  try {
+    if (dirExistsSync(TestConfig.entriesDir()))
+      rmSync(TestConfig.entriesDir(), { recursive: true });
+    const fullFilePath = path.join(TestConfig.baseDir(), "full.md");
+    if (fileExistsSync(fullFilePath)) rmSync(fullFilePath);
+  } catch (err) {
+    // noop
+  }
 };

@@ -44,6 +44,16 @@ mkay-diary generate # to embed full diray in Readme.md
 npm install --global @lpezet/mkay-diary
 ```
 
+Use `sudo` in front of the command above if you get an error like the following:
+
+```bash
+npm ERR! The operation was rejected by your operating system.
+npm ERR! It is likely you do not have the permissions to access this file as the current user
+```
+
+The reason is that `npm` will download the `@lpezet/mkay-diary` package into `/usr/lib/node_modules/` and create a symbolic link in `/usr/bin/` (linux) called `mkay-diary` to it. 
+Changes in `/usr/bin` may require privileged access and therefore the need for `sudo` in such situation. 
+
 # Setup
 
 

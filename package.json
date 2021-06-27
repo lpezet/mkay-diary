@@ -38,6 +38,7 @@
     "didyoumean": "^1.2.1",
     "exit-code": "^1.0.2",
     "htmlparser2": "^6.1.0",
+    "inquirer": "^8.1.1",
     "javascript-time-ago": "^2.3.6",
     "lodash": "^4.17.21",
     "log4js": "^6.3.0",

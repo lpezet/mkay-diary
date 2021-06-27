@@ -10,6 +10,11 @@ import open from "open";
 import { ChildProcess, exec, ExecException } from "child_process";
 import { Readable } from "stream";
 
+import { createLogger } from "./logger";
+import { createReadStream, createWriteStream } from "fs";
+import { ConfigCommand } from "./commands/config";
+import inquirer from "inquirer";
+
 /*
 import { configureLogger } from "./logger";
 configureLogger({
@@ -22,8 +27,6 @@ configureLogger({
 });
 */
 
-import { createLogger } from "./logger";
-import { createReadStream, createWriteStream } from "fs";
 const LOGGER = createLogger("main");
 
 const readAllFromReadable = async (r: Readable | null): Promise<string> => {
@@ -84,6 +87,7 @@ export class Main {
         createReadStream: createReadStream,
         createWriteStream: createWriteStream,
       }),
+      new ConfigCommand(this.config, { prompt: inquirer.prompt }),
     ];
     const registrations: Promise<program.CommanderStatic>[] = [];
     commands.forEach((c) => {

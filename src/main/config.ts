@@ -114,6 +114,6 @@ export class BaseConfig implements Config {
 
 export const ConfigDefaults: { [key: string]: string } = {
   BASE_DIR: ".diary",
-  EDITOR: 'open -a "/Applications/Visual Studio Code.app"',
+  EDITOR: "", // Examples: for Mac: 'open -a "/Applications/Visual Studio Code.app"', for Linux: '/usr/bin/code'
   INCLUDE_HEADER: "false",
 };

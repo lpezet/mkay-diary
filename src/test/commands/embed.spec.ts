@@ -1,12 +1,13 @@
 import { assert } from "chai";
 import * as fs from "fs";
 import * as path from "path";
-import { configureLogger } from "../../main/logger";
 import { EmbedCommand, endTag, startTag } from "../../main/commands/embed";
 import { deleteAllTestEntries, TestConfig } from "../helpers/commons";
 import { Config } from "../../main/config";
 import program from "commander";
 
+/*
+import { configureLogger } from "../../main/logger";
 configureLogger({
   appenders: {
     console: { type: "console", layout: { type: "colored" } },
@@ -15,7 +16,7 @@ configureLogger({
     default: { appenders: ["console"], level: "all" },
   },
 });
-
+*/
 /*
 const inspect = (obj: any, depth: number): void => {
   console.error(util.inspect(obj, false, depth || 5, true));

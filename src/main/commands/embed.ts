@@ -6,7 +6,7 @@ import { updateSection } from "../update-section";
 import { createLogger } from "../logger";
 import { Command } from "../command";
 
-const LOGGER = createLogger("command:generate");
+const LOGGER = createLogger("command:embed");
 
 export const startTag = (hint?: string): string => {
   return `<!-- ${hint}START mkay-diary -->`;
