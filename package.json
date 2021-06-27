@@ -1,6 +1,6 @@
 {
   "name": "@lpezet/mkay-diary",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple diary for development.",
   "main": "index.js",
   "bin": {
