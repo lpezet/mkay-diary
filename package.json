@@ -4,7 +4,7 @@
   "description": "Simple diary for development.",
   "main": "index.js",
   "bin": {
-    "mkay-diary": "lib/bin/mkay-diary.js"
+    "mkay-diary": "src/bin/mkay-diary.js"
   },
   "scripts": {
     "copy-templates.old": "[ ! -d lib/src/main/templates ] && mkdir lib/src/main/templates; cp -r src/main/templates/ lib/src/main/templates/; [ ! -d lib/src/main/core/templates ] && mkdir lib/src/main/core/templates; cp -r src/main/core/templates/ lib/src/main/core/templates/",
