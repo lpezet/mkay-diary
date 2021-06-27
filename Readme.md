@@ -209,6 +209,8 @@ Log file should reside in Config.baseDir() (`.diary` by default).
 To publish next version of `mkay-diary`, run the following:
 
 ```bash
+npm version patch
+git push --tags origin master
 npm run dist
 npm publish dist/ --access public
 ```
