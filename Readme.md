@@ -24,6 +24,8 @@ mkay-diary embed # to embed full diray in Readme.md
 - [Features](#features)
 - [Usage](#usage)
 - [Configuration](#configuration)
+- [License](#license)
+- [Publishing](#publishing)
 - [Diary](#diary)
   - [Entry for 06/02/21](#entry-for-060221)
   - [Entry for 06/03/21](#entry-for-060321)
@@ -33,8 +35,6 @@ mkay-diary embed # to embed full diray in Readme.md
   - [06/26/2021 - Refeactoring and logs](#06262021---refeactoring-and-logs)
     - [Refactoring](#refactoring)
     - [Log file](#log-file)
-- [License](#license)
-- [Publishing](#publishing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
