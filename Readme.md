@@ -10,8 +10,8 @@ Very simple daily entries to embed within your Readme.md.
 
 ```bash
 mkay-diary entry # to create or edit today's entry
-mkay-diary index # to create full diary
-mkay-diary generate # to embed full diray in Readme.md
+mkay-diary full # to create full diary
+mkay-diary embed # to embed full diray in Readme.md
 ```
 
 # Table of Contents
@@ -51,8 +51,23 @@ npm ERR! The operation was rejected by your operating system.
 npm ERR! It is likely you do not have the permissions to access this file as the current user
 ```
 
-The reason is that `npm` will download the `@lpezet/mkay-diary` package into `/usr/lib/node_modules/` and create a symbolic link in `/usr/bin/` (linux) called `mkay-diary` to it. 
-Changes in `/usr/bin` may require privileged access and therefore the need for `sudo` in such situation. 
+The reason is that `npm` will download the `@lpezet/mkay-diary` package into `/usr/lib/node_modules/` and create a symbolic link in `/usr/bin/` named `mkay-diary` to it. 
+Changes in `/usr/bin` may require privileged access and therefore the need for `sudo` in such situation.
+
+As an alternative, you can clone this repository and execute the following commands in its directory:
+
+```bash
+npm install
+npm run dist
+alias mkay-diary="`pwd`/dist/src/bin/mkay-diary.js"
+```
+
+At this point, running `mkay-diary` should work but this is a temporary alias.
+You can make the alias permanent by editing your `.bashrc` for example, or create a symbolic link to that `mkay-diary.js` file in /usr/bin, /usr/local/bin or anywhere suits you:
+
+```bash
+sudo ln -s $(pwd)/dist/src/bin/mkay-diary.js /usr/bin/mkay-diary
+```
 
 # Setup
 
@@ -102,9 +117,45 @@ mkay-diary b
 
 # Configuration
 
+Configuration for `mkay-diary` is located at `.diary/config.json`.
+You can either edit the file directly, or use interactive command like so:
+
+```bash
+mkday-diary config
+or
+mkday-diary c
+```
+
+# License
+
+[MIT](LICENSE)
+
+
+[npm-image]: https://badge.fury.io/js/%40lpezet%2Fmkay-diary.svg
+[npm-url]: https://npmjs.com/package/@lpezet/mkay-diary
+[travis-image]: https://www.travis-ci.com/lpezet/mkay-diary.svg?branch=master
+[travis-url]: https://www.travis-ci.com/github/lpezet/mkay-diary
+[coveralls-image]: https://coveralls.io/repos/github/lpezet/mkay-diary/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/lpezet/mkay-diary?branch=master
+[appveyor-image]: https://ci.appveyor.com/api/projects/status/hxkr7yml7qhi9jo8?svg=true
+[appveyor-url]: https://ci.appveyor.com/project/lpezet/mkay-diary
+[vulnerabilities-image]: https://snyk.io/test/github/lpezet/mkay-diary/badge.svg
+[vulnerabilities-url]: https://snyk.io/test/github/lpezet/mkay-diary
+
+# Publishing
+
+To publish next version of `mkay-diary`, run the following:
+
+```bash
+npm version patch
+git push --tags origin master
+npm run dist
+npm publish dist/ --access public
+```
+
 # Diary
 
-This is where the diary of this project is embedded.
+This is where the diary of this project is embedded using tags.
 
 <!-- e4a49e0START mkay-diary -->
 
@@ -187,30 +238,3 @@ constructor(pConfig: Config, pDeps: Deps) {
 Log file should reside in Config.baseDir() (`.diary` by default).
 
 <!-- e4a49e0END mkay-diary -->
-
-# License
-
-[MIT](LICENSE)
-
-
-[npm-image]: https://badge.fury.io/js/%40lpezet%2Fmkay-diary.svg
-[npm-url]: https://npmjs.com/package/@lpezet/mkay-diary
-[travis-image]: https://www.travis-ci.com/lpezet/mkay-diary.svg?branch=master
-[travis-url]: https://www.travis-ci.com/github/lpezet/mkay-diary
-[coveralls-image]: https://coveralls.io/repos/github/lpezet/mkay-diary/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/lpezet/mkay-diary?branch=master
-[appveyor-image]: https://ci.appveyor.com/api/projects/status/hxkr7yml7qhi9jo8?svg=true
-[appveyor-url]: https://ci.appveyor.com/project/lpezet/mkay-diary
-[vulnerabilities-image]: https://snyk.io/test/github/lpezet/mkay-diary/badge.svg
-[vulnerabilities-url]: https://snyk.io/test/github/lpezet/mkay-diary
-
-# Publishing
-
-To publish next version of `mkay-diary`, run the following:
-
-```bash
-npm version patch
-git push --tags origin master
-npm run dist
-npm publish dist/ --access public
-```
