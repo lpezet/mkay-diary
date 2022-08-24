@@ -1,4 +1,4 @@
-import { Logger } from "./logger";
+import { Logger, Level } from "./logger";
 import * as clc from "cli-color";
 // import { timeStamp } from "console";
 
@@ -108,15 +108,12 @@ export class AdvancedLogger implements Logger {
     this.log(type, clc.yellow.bold(`${WARNING_CHAR}  ${label}:`), message);
   }
 
-  new(dispatch: (...args: any[]) => void, name: string): Logger {
-    return this.logger.new(dispatch, name);
-  }
-
-  get level(): string {
+  get level(): Level | string {
     return this.logger.level;
   }
-  log(...args: any[]): void {
-    this.logger.log(...args);
+
+  log(level: Level | string, ...args: any[]): void {
+    this.logger.log(level, ...args);
   }
 
   isLevelEnabled(level?: string): boolean {
@@ -142,7 +139,7 @@ export class AdvancedLogger implements Logger {
     return this.logger.isFatalEnabled();
   }
 
-  _log(level: string, data: any): void {
+  _log(level: Level, data: any): void {
     this.logger._log(level, data);
   }
 

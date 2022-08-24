@@ -1,11 +1,14 @@
 import {
   getLogger,
   Logger as log4jLogger,
+  Level as log4jLevel,
   Configuration as log4jsConfiguration,
   configure as log4jsConfigure,
 } from "log4js";
 
-export type Logger = log4jLogger;
+export type Logger = Omit<log4jLogger, "new">;
+
+export type Level = log4jLevel;
 
 export type Configuration = log4jsConfiguration;
 
